@@ -5,12 +5,13 @@
         <input
           type="number"
           class="form-control currency-form__input"
-          v-model="leftSelected.value"
+          v-model.number="leftForm.value"
+          @keyup="calcRightValue"
           @change="calcRightValue"
         />
         <select
           class="form-control currency-form__currency"
-          v-model="leftSelected.name"
+          v-model="leftForm.name"
           @change="calcRightValue"
         >
           <option
@@ -30,12 +31,13 @@
         <input
           type="number"
           class="form-control currency-form__input"
-          v-model="rightSelected.value"
+          v-model.number="rightForm.value"
+          @keyup="calcLeftValue"
           @change="calcLeftValue"
         />
         <select
           class="form-control currency-form__currency"
-          v-model="rightSelected.name"
+          v-model="rightForm.name"
           @change="calcRightValue"
         >
           <option
@@ -59,11 +61,11 @@ export default {
   },
   data() {
     return {
-      leftSelected: {
+      leftForm: {
         value: 1,
         name: "USD",
       },
-      rightSelected: {
+      rightForm: {
         value: 1,
         name: "EUR",
       },
@@ -74,22 +76,27 @@ export default {
   },
   computed: {
     leftCurrencyRate() {
-      return this.currencyRates[this.leftSelected.name];
+      return this.currencyRates[this.leftForm.name];
     },
     rightCurrencyRate() {
-      return this.currencyRates[this.rightSelected.name];
+      return this.currencyRates[this.rightForm.name];
     },
   },
   methods: {
     calcLeftValue() {
-      const { rightSelected, rightCurrencyRate, leftCurrencyRate } = this;
-      this.leftSelected.value =
-        rightSelected.value * (leftCurrencyRate / rightCurrencyRate);
+      const { rightForm, rightCurrencyRate, leftCurrencyRate } = this;
+
+      const leftValue =
+        rightForm.value * (leftCurrencyRate / rightCurrencyRate);
+      this.leftForm.value = +leftValue.toFixed(2);
     },
+
     calcRightValue() {
-      const { leftSelected, leftCurrencyRate, rightCurrencyRate } = this;
-      this.rightSelected.value =
-        leftSelected.value * (rightCurrencyRate / leftCurrencyRate);
+      const { leftForm, leftCurrencyRate, rightCurrencyRate } = this;
+
+      const rightValue =
+        leftForm.value * (rightCurrencyRate / leftCurrencyRate);
+      this.rightForm.value = +rightValue.toFixed(2);
     },
   },
 };
@@ -107,11 +114,10 @@ export default {
   margin-bottom: 0;
 }
 .currency-form__input {
-  width: 65%;
-  flex-grow: 0;
+  flex-grow: 1;
+  margin-right: 5px;
 }
 .currency-form__currency {
-  flex-grow: 0;
-  flex-basis: 32%;
+  width: 80px;
 }
 </style>

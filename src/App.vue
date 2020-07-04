@@ -11,7 +11,6 @@
 import CurrencyForm from "./components/CurrencyForm";
 
 export default {
-  name: "App",
   components: {
     CurrencyForm,
   },
@@ -23,7 +22,6 @@ export default {
   async mounted() {
     const res = await fetch("https://api.exchangeratesapi.io/latest?base=USD");
     const { rates } = await res.json();
-    // transforming object into array
     this.currencyRates = rates;
   },
 };
